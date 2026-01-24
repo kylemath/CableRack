@@ -100,3 +100,10 @@ show_assembled = false; // true = assembled position
 ## License
 
 Personal/educational use.
+
+## Preview
+
+<p align="center">
+  <img src="screenshot.png" alt="Project screenshot" width="720" />
+</p>
+
