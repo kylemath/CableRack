@@ -1,0 +1,11 @@
+{
+  "id": "CableRack",
+  "title": "CableRack",
+  "oneLiner": "A rack to plug in loose cable ends with various inserts",
+  "demoUrl": "https://github.com/kylemath/CableRack",
+  "screenshot": "https://raw.githubusercontent.com/kylemath/CableRack/main/screenshot.png",
+  "kind": "project",
+  "categories": ["3d print", "cables", "electronics"],
+  "tags": ["3d print", "cables", "electronics"],
+  "status": "published"
+}
