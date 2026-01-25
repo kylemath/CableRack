@@ -14,11 +14,17 @@ include <insert_base.scad>
 
 // === 2x2 FRAME MODULE ===
 module grid_frame() {
+    // Recalculate frame dimensions for current grid
+    local_grid_width = (grid_cols * slot_width) + ((grid_cols - 1) * frame_wall);
+    local_grid_height = (grid_rows * slot_height) + ((grid_rows - 1) * frame_wall);
+    local_frame_width = local_grid_width + (2 * frame_border);
+    local_frame_height = local_grid_height + (2 * frame_border);
+    
     difference() {
-        rounded_box_rect(frame_width, frame_height_total, frame_total_depth, 3);
+        rounded_box_rect(local_frame_width, local_frame_height, frame_total_depth, 3);
         translate([0, 0, frame_back]) slot_grid();
         back_cutouts();
-        mounting_holes();
+        mounting_holes(local_frame_width, local_frame_height);
     }
 }
 
@@ -44,39 +50,20 @@ module back_cutouts() {
         y = (row - (grid_rows-1)/2) * (slot_height + frame_wall);
         translate([x, y, -0.1])
             rounded_box_rect(cutout_w, cutout_h, frame_back + 0.2, 1);
-        translate([x, y, 0]) tab_cutouts();
     }
 }
 
-module tab_cutouts() {
-    tab_cutout_width = snap_tab_width + 1;
-    tab_cutout_height = snap_tab_thick + 1;
-    tab_cutout_into_wall = (snap_tab_protrude + 1) / 2;  // Half depth
-    
-    cutout_z = frame_back + slot_depth/2;
-    wall_y = slot_height/2;
-    
-    for (ym = [-1, 1]) {
-        translate([0, ym * (wall_y + tab_cutout_into_wall/2 - 0.1), cutout_z])
-            cube([tab_cutout_width, tab_cutout_into_wall + 0.2, tab_cutout_height], center=true);
-    }
-}
-
-module mounting_holes() {
-    hx = frame_width/2 - frame_border/2;
-    hy = frame_height_total/2 - frame_border/2;
-    for (xm = [-1, 1], ym = [-1, 1])
-        translate([xm * hx, ym * hy, -0.1])
+module mounting_holes(fw, fh) {
+    hx = fw/2 - frame_border/2 - 1;
+    hy = fh/2 - frame_border/2 - 1;
+    for (xm = [-1, 1], ym = [-1, 1]) {
+        translate([xm * hx, ym * hy, -0.1]) {
+            // Through hole for screw shaft
             cylinder(d=mount_hole_dia, h=frame_total_depth + 0.2);
-}
-
-// === INSERT MODULES ===
-module insert_usbc() {
-    insert_with_port() port_usbc();
-}
-
-module insert_usb_micro() {
-    insert_with_port() port_usb_micro();
+            // Countersink on back face (mounting surface)
+            cylinder(d1=countersink_dia, d2=mount_hole_dia, h=countersink_depth);
+        }
+    }
 }
 
 // ============================================
@@ -84,18 +71,21 @@ module insert_usb_micro() {
 // ============================================
 // Arrange all pieces on the print bed
 
+// Calculate frame dimensions for layout
+test_frame_width = ((grid_cols * slot_width) + ((grid_cols - 1) * frame_wall)) + (2 * frame_border);
+
 // Frame (centered, print with back side down)
 translate([0, 0, 0])
     grid_frame();
 
 // USB-C Insert (to the right, print with port side down)
-translate([frame_width/2 + 25, 10, 0])
+translate([test_frame_width/2 + 25, 10, 0])
     rotate([180, 0, 0])
     translate([0, 0, -insert_total_depth])
     insert_usbc();
 
 // Micro USB Insert (to the right, below USB-C)
-translate([frame_width/2 + 25, -10, 0])
+translate([test_frame_width/2 + 25, -10, 0])
     rotate([180, 0, 0])
     translate([0, 0, -insert_total_depth])
     insert_usb_micro();

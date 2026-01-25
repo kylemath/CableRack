@@ -1,5 +1,5 @@
 // ============================================
-// PRINT FILE: 2x2 Frame (4 slots)
+// PRINT FILE: 3x3 Frame (9 slots)
 // ============================================
 // Print with back side down (no supports needed)
 // ============================================
@@ -7,11 +7,13 @@
 include <parameters.scad>
 include <insert_base.scad>
 
-// Grid size is already 2x2 in parameters.scad (default)
+// Override grid size for 3x3
+grid_cols = 3;
+grid_rows = 3;
 
-// === 2x2 FRAME MODULE ===
+// === 3x3 FRAME MODULE ===
 module grid_frame() {
-    // Recalculate frame dimensions for current grid
+    // Recalculate frame dimensions for 3x3 grid
     local_grid_width = (grid_cols * slot_width) + ((grid_cols - 1) * frame_wall);
     local_grid_height = (grid_rows * slot_height) + ((grid_rows - 1) * frame_wall);
     local_frame_width = local_grid_width + (2 * frame_border);
