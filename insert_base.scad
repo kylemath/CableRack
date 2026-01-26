@@ -61,6 +61,27 @@ module insert_blank_label_narrow() {
     }
 }
 
+// === AC POWER PLUG INSERT (2-prong, no ground) ===
+// Uses standard wide insert, with asymmetric holes for polarity
+// Centered prongs for 2-prong power plugs only
+module insert_power_plug() {
+    difference() {
+        insert_blank_custom(power_body_depth);
+        
+        // Hot prong (narrower, on left looking at front)
+        translate([-power_prong_spacing/2, 0, -0.1])
+            linear_extrude(insert_base_depth + power_body_depth + 0.2)
+            offset(r=port_clearance)
+            square([power_hot_w, power_hot_h], center=true);
+        
+        // Neutral prong (wider, on right looking at front)
+        translate([power_prong_spacing/2, 0, -0.1])
+            linear_extrude(insert_base_depth + power_body_depth + 0.2)
+            offset(r=port_clearance)
+            square([power_neutral_w, power_neutral_h], center=true);
+    }
+}
+
 // === INSERT WITH THROUGH-HOLE PORT (custom depth) ===
 // Pass body_depth and a 2D shape as children
 module insert_with_port_custom(body_depth) {
@@ -102,60 +123,246 @@ module insert_with_port_narrow() {
 
 // === PRE-MADE INSERT MODULES WITH CORRECT DEPTHS ===
 module insert_usbc() {
+    // USB-C without retention ribs (per user request)
     insert_with_port_custom(usbc_body_depth) port_usbc();
 }
 
 module insert_usba() {
-    insert_with_port_custom(usba_body_depth) port_usba();
+    difference() {
+        insert_blank_custom(usba_body_depth);
+        
+        // Main USB-A port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usba_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usba();
+    }
+    
+    // Add retention ribs on left and right sides (inside the port)
+    rib_z = insert_base_depth + usba_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usba_w/2 - usba_retention_rib_size), 0, rib_z])
+            cube([usba_retention_rib_size * 2, usba_h - 1, 1.5], center=true);
+    }
 }
 
 module insert_usb_mini() {
-    insert_with_port_custom(usb_mini_body_depth) port_usb_mini();
+    difference() {
+        insert_blank_custom(usb_mini_body_depth);
+        
+        // Main USB Mini port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usb_mini_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usb_mini();
+    }
+    
+    // Add retention ribs on left and right sides
+    rib_z = insert_base_depth + usb_mini_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usb_mini_w/2 - usb_mini_retention_rib_size), 0, rib_z])
+            cube([usb_mini_retention_rib_size * 2, usb_mini_h - 0.6, 1.0], center=true);
+    }
 }
 
 module insert_usb_micro() {
-    insert_with_port_custom(usb_micro_body_depth) port_usb_micro();
+    difference() {
+        insert_blank_custom(usb_micro_body_depth);
+        
+        // Main USB Micro-B port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usb_micro_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usb_micro();
+    }
+    
+    // Add retention ribs on left and right sides (inside the port)
+    rib_z = insert_base_depth + usb_micro_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usb_micro_w/2 - usb_micro_retention_rib_size), 0, rib_z])
+            cube([usb_micro_retention_rib_size * 2, usb_micro_h - 0.4, 1.0], center=true);
+    }
 }
 
 module insert_usb_b() {
-    insert_with_port_custom(usb_b_body_depth) port_usb_b();
+    difference() {
+        insert_blank_custom(usb_b_body_depth);
+        
+        // Main USB-B port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usb_b_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usb_b();
+    }
+    
+    // Add retention ribs on left and right sides
+    rib_z = insert_base_depth + usb_b_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usb_b_w/2 - usb_b_retention_rib_size), 0, rib_z])
+            cube([usb_b_retention_rib_size * 2, usb_b_h - 1.5, 1.5], center=true);
+    }
 }
 
 module insert_lightning() {
-    insert_with_port_custom(lightning_body_depth) port_lightning();
+    difference() {
+        insert_blank_custom(lightning_body_depth);
+        
+        // Main Lightning port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + lightning_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_lightning();
+    }
+    
+    // Add retention ribs on left and right sides (Lightning has detents on sides)
+    rib_z = insert_base_depth + lightning_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (lightning_w/2 - lightning_retention_rib_size), 0, rib_z])
+            cube([lightning_retention_rib_size * 2, lightning_h - 0.4, 0.8], center=true);
+    }
 }
 
 module insert_hdmi() {
-    insert_with_port_custom(hdmi_body_depth) port_hdmi();
+    difference() {
+        insert_blank_custom(hdmi_body_depth);
+        
+        // Main HDMI port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + hdmi_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_hdmi();
+    }
+    
+    // Add retention ribs on left and right sides
+    rib_z = insert_base_depth + hdmi_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (hdmi_w/2 - hdmi_retention_rib_size - 1), 0, rib_z])
+            cube([hdmi_retention_rib_size * 2, hdmi_h - 0.8, 1.0], center=true);
+    }
 }
 
 module insert_audio_jack() {
-    insert_with_port_custom(audio_jack_body_depth) port_audio_jack();
+    difference() {
+        insert_blank_custom(audio_jack_body_depth);
+        
+        // Main audio jack hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + audio_jack_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_audio_jack();
+        
+        // Inner ribs for TRS/TRRS rings (2 and 3 channel jacks)
+        // Ring 1 groove (for 2-channel TRS)
+        translate([0, 0, insert_base_depth + audio_jack_ring1])
+            cylinder(d=audio_jack_dia + 1.0, h=0.8, center=true);
+        
+        // Ring 2 groove (for 3-channel TRRS)
+        translate([0, 0, insert_base_depth + audio_jack_ring2])
+            cylinder(d=audio_jack_dia + 1.0, h=0.8, center=true);
+    }
 }
 
 // === NARROW PRE-MADE INSERT MODULES ===
 module insert_usbc_narrow() {
+    // USB-C without retention ribs (per user request)
     insert_with_port_narrow_custom(usbc_body_depth) port_usbc();
 }
 
 module insert_usba_narrow() {
-    insert_with_port_narrow_custom(usba_body_depth) port_usba();
+    difference() {
+        insert_blank_narrow_custom(usba_body_depth);
+        
+        // Main USB-A port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usba_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usba();
+    }
+    
+    // Add retention ribs on left and right sides (inside the port)
+    rib_z = insert_base_depth + usba_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usba_w/2 - usba_retention_rib_size), 0, rib_z])
+            cube([usba_retention_rib_size * 2, usba_h - 1, 1.5], center=true);
+    }
 }
 
 module insert_usb_micro_narrow() {
-    insert_with_port_narrow_custom(usb_micro_body_depth) port_usb_micro();
+    difference() {
+        insert_blank_narrow_custom(usb_micro_body_depth);
+        
+        // Main USB Micro-B port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usb_micro_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usb_micro();
+    }
+    
+    // Add retention ribs on left and right sides (inside the port)
+    rib_z = insert_base_depth + usb_micro_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usb_micro_w/2 - usb_micro_retention_rib_size), 0, rib_z])
+            cube([usb_micro_retention_rib_size * 2, usb_micro_h - 0.4, 1.0], center=true);
+    }
 }
 
 module insert_usb_b_narrow() {
-    insert_with_port_narrow_custom(usb_b_body_depth) port_usb_b();
+    difference() {
+        insert_blank_narrow_custom(usb_b_body_depth);
+        
+        // Main USB-B port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + usb_b_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_usb_b();
+    }
+    
+    // Add retention ribs on left and right sides
+    rib_z = insert_base_depth + usb_b_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (usb_b_w/2 - usb_b_retention_rib_size), 0, rib_z])
+            cube([usb_b_retention_rib_size * 2, usb_b_h - 1.5, 1.5], center=true);
+    }
 }
 
 module insert_lightning_narrow() {
-    insert_with_port_narrow_custom(lightning_body_depth) port_lightning();
+    difference() {
+        insert_blank_narrow_custom(lightning_body_depth);
+        
+        // Main Lightning port hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + lightning_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_lightning();
+    }
+    
+    // Add retention ribs on left and right sides (Lightning has detents on sides)
+    rib_z = insert_base_depth + lightning_retention_rib_depth;
+    for (side = [-1, 1]) {
+        translate([side * (lightning_w/2 - lightning_retention_rib_size), 0, rib_z])
+            cube([lightning_retention_rib_size * 2, lightning_h - 0.4, 0.8], center=true);
+    }
 }
 
 module insert_audio_jack_narrow() {
-    insert_with_port_narrow_custom(audio_jack_body_depth) port_audio_jack();
+    difference() {
+        insert_blank_narrow_custom(audio_jack_body_depth);
+        
+        // Main audio jack hole (all the way through)
+        translate([0, 0, -0.1])
+            linear_extrude(insert_base_depth + audio_jack_body_depth + 0.2)
+            offset(r=port_clearance)
+            port_audio_jack();
+        
+        // Inner ribs for TRS/TRRS rings (2 and 3 channel jacks)
+        // Ring 1 groove (for 2-channel TRS)
+        translate([0, 0, insert_base_depth + audio_jack_ring1])
+            cylinder(d=audio_jack_dia + 1.0, h=0.8, center=true);
+        
+        // Ring 2 groove (for 3-channel TRRS)
+        translate([0, 0, insert_base_depth + audio_jack_ring2])
+            cylinder(d=audio_jack_dia + 1.0, h=0.8, center=true);
+    }
 }
 
 // === SNAP TABS (on neck/body - catch on frame cutouts) ===
@@ -256,19 +463,30 @@ module port_usb_mini() {
 }
 
 module port_usb_micro() {
-    port_rounded_rect(usb_micro_w, usb_micro_h, usb_micro_r);
+    // USB Micro-B has a trapezoid shape with beveled bottom corners
+    // This is different from Micro-A which is rectangular
+    hull() {
+        // Top corners (full width)
+        for (x = [-1, 1])
+            translate([x * (usb_micro_w/2 - usb_micro_r), (usb_micro_h/2 - usb_micro_r)])
+                circle(r=usb_micro_r);
+        // Bottom corners (slightly beveled inward for Micro-B shape)
+        for (x = [-1, 1])
+            translate([x * (usb_micro_w/2 - usb_micro_r - 0.5), -(usb_micro_h/2 - usb_micro_r)])
+                circle(r=usb_micro_r);
+    }
 }
 
 module port_usb_b() {
-    // USB-B has slightly beveled top corners (more square than previous version)
+    // USB-B has trapezoid shape - wider at bottom, narrower at top
     hull() {
         // Bottom corners (full width, rounded)
         for (x = [-1, 1])
             translate([x * (usb_b_w/2 - usb_b_r), -(usb_b_h/2 - usb_b_r)])
                 circle(r=usb_b_r);
-        // Top corners (slightly chamfered - only 0.5mm inward for subtle bevel)
+        // Top corners (narrower - creates proper trapezoid shape)
         for (x = [-1, 1])
-            translate([x * (usb_b_w/2 - usb_b_r - 0.5), (usb_b_h/2 - usb_b_r)])
+            translate([x * (usb_b_w/2 - usb_b_r - usb_b_top_inset), (usb_b_h/2 - usb_b_r)])
                 circle(r=usb_b_r);
     }
 }
@@ -292,6 +510,7 @@ module port_hdmi() {
 }
 
 module port_audio_jack() {
+    // Main hole
     circle(d=audio_jack_dia);
 }
 

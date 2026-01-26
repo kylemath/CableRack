@@ -1,6 +1,6 @@
-# Modular Cable Organizer
+# Modular Cable Organizer + Universal Connector System
 
-A wall-mountable, modular cable organizer system designed for 3D printing (PLA+).
+A wall-mountable, modular cable organizer system designed for 3D printing (PLA+), with an experimental **Universal 24-Pin Connector System** for standardized cable interconnects.
 
 ## Project Structure
 
@@ -16,6 +16,14 @@ CableRack/
 ├── insert_*.scad             # All connector insert types
 ├── print_insert_*.scad       # Print files for each insert
 ├── demo.scad                 # Demo view with all inserts
+│
+│── UNIVERSAL CONNECTOR SYSTEM (Experimental)
+├── UNIVERSAL_CONNECTOR_SPEC.md    # Full 24-pin specification
+├── insert_universal_base.scad     # Universal adapter base module
+├── print_insert_universal_*.scad  # Universal adapter print files
+├── print_universal_male_terminator.scad  # Cable-end connector
+├── demo_universal.scad            # Universal system visualization
+│
 ├── print/                    # Pre-generated STL files
 ├── ReferenceImages/          # Design reference blueprints
 ├── UPDATES.md                # Recent changes and improvements
@@ -144,6 +152,59 @@ See `UPDATES.md` for recent changes, including:
 - New 3x3 frame option
 - Comprehensive test files for validation
 - Improved parametric frame system
+
+---
+
+## Universal Connector System (Experimental)
+
+An ambitious extension to the cable organizer that creates a **standardized 24-pin interconnect** allowing any cable to connect to any device through modular adapters.
+
+### Concept
+
+```
+┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
+│   DEVICE    │────▶│  24-PIN UNIVERSAL│◀────│   CABLE     │
+│  (Laptop)   │     │    INTERFACE     │     │  (Any type) │
+└─────────────┘     └──────────────────┘     └─────────────┘
+```
+
+### Components
+
+| Component | Description |
+|-----------|-------------|
+| **Device Adapter Insert** | Accepts original connector (USB-C, HDMI, etc.), routes to 24-pin rear |
+| **Universal Male Terminator** | Replaces proprietary cable ends with standardized 24-pin plug |
+| **Pass-Through Insert** | 24-pin female-to-female for cable extension |
+
+### Protocol Support
+
+| Protocol | Support Level | Notes |
+|----------|---------------|-------|
+| USB 2.0 | ✅ Full | Direct passive routing |
+| USB 3.0/3.1 | ✅ Full | Requires impedance-matched PCB |
+| USB-C PD (100W) | ✅ Full | With PD controller IC |
+| DisplayPort 1.4 | ✅ Full | Native routing, 4 lanes |
+| HDMI 1.4 | ⚠️ Active | Requires TMDS↔DP converter |
+| Lightning | ✅ Full | USB 2.0 internally |
+| 3.5mm Audio | ✅ Full | Analog passthrough |
+
+### Files
+
+- `UNIVERSAL_CONNECTOR_SPEC.md` - Complete 24-pin specification with pinout
+- `insert_universal_base.scad` - Base module for all universal adapters
+- `print_insert_universal_usbc.scad` - USB-C adapter
+- `print_insert_universal_hdmi.scad` - HDMI adapter (active)
+- `print_insert_universal_displayport.scad` - DisplayPort adapter
+- `print_universal_male_terminator.scad` - Cable-end connector
+- `demo_universal.scad` - Visualization and cross-sections
+
+### Certification Path
+
+For production: UL 62368-1, IEC 62368-1, FCC Part 15, CE Mark, RoHS
+
+See `UNIVERSAL_CONNECTOR_SPEC.md` for full technical details.
+
+---
 
 ## License
 
