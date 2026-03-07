@@ -519,5 +519,89 @@ module port_label_recess() {
     square([label_w, label_h], center=true);
 }
 
+// === KEYHOLE MOUNTING INSERT (WIDE) ===
+// Blank front, keyhole slot on back for picture-hanger style wall/table mounting
+// Two-layer keyhole: wide channel below for head, narrow slot above
+module insert_mount() {
+    difference() {
+        union() {
+            // Start with blank insert
+            insert_blank();
+            
+        
+        }
+        
+        // Cut the two-layer keyhole
+        translate([0, 2.8, -0.1])
+            keyhole_slot_3d();
+    }
+}
+
+// === KEYHOLE MOUNTING INSERT (NARROW) ===
+// Blank front, single centered keyhole on back
+module insert_mount_narrow() {
+    difference() {
+        union() {
+            // Start with narrow blank insert
+            insert_blank_narrow();
+            
+          
+        }
+        
+        // Cut the two-layer keyhole
+        translate([0, 0, -0.1])
+            keyhole_slot_3d();
+    }
+}
+
+
+// === 3D TWO-LAYER KEYHOLE SLOT ===
+// Stadium shape: two circles connected by tangent lines
+// Top 3mm (surface): Full stadium shape (head can see/enter entire path)
+// Bottom 3mm (underneath): Entry circle + narrow slot to lock (restriction layer)
+// Positioned so LOCK position is centered (entry is offset)
+module keyhole_slot_3d() {
+    // Travel distance between circle centers
+    travel = keyhole_slot_length    ;
+    bottom_depth = 3;  // Deeper layer depth
+    top_depth = 3;     // Surface layer depth
+    
+    // Shift entire keyhole so lock position ends up at center (Y=0)
+    // Entry position will be at Y=-travel
+    translate([0, -travel, 0]) {
+        // BOTTOM LAYER (underneath): Entry circle + narrow slot to lock position
+        linear_extrude(bottom_depth)
+            keyhole_bottom_layer_2d(travel);
+        
+        // TOP LAYER (surface): Full stadium shape - visible from surface
+        translate([0, 0, bottom_depth - 0.1])
+            linear_extrude(top_depth + 0.2)
+            stadium_2d(keyhole_head_dia, travel);
+    }
+}
+
+// === STADIUM SHAPE: Two circles connected by tangent lines ===
+// Vertical orientation - travels along Y axis (fits narrow dimension)
+module stadium_2d(diameter, length) {
+    hull() {
+        circle(d=diameter);
+        translate([0, length, 0])
+            circle(d=diameter);
+    }
+}
+
+// === BOTTOM LAYER: Entry circle + narrow slot ===
+// Vertical orientation - travels along Y axis (fits narrow dimension)
+module keyhole_bottom_layer_2d(travel) {
+    // Entry circle (screw head drops through here) - at Y=0
+    circle(d=keyhole_head_dia);
+    
+    // Narrow rectangle from entry to lock position
+    // Centered on the path, parallel to travel direction (Y axis)
+    // Only the screw shaft fits through this
+    translate([0, travel/2, 0])
+        square([keyhole_slot_width, travel + 0.1 + 3.5], center=true);
+}
+
 // === RENDER (for testing this file directly) ===
 // insert_blank();

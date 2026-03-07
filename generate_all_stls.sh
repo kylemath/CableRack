@@ -16,6 +16,8 @@ openscad -o print/print_insert_hdmi.stl print_insert_hdmi.scad &
 openscad -o print/print_insert_audio_jack.stl print_insert_audio_jack.scad &
 openscad -o print/print_insert_blank.stl print_insert_blank.scad &
 openscad -o print/print_insert_blank_label.stl print_insert_blank_label.scad &
+openscad -o print/print_insert_mount.stl print_insert_mount.scad &
+openscad -o print/print_insert_mount_narrow.stl print_insert_mount_narrow.scad &
 
 echo "Generating test sets..."
 openscad -o print/print_test_set.stl print_test_set.scad &

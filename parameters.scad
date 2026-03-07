@@ -21,8 +21,8 @@ slot_depth = 4;  // Reduced from 6mm - less frame depth needed
 frame_wall = 2.0;   // Wall between slots - 6 layers @ 0.4mm nozzle for strength
 frame_border = 6;  // Increased by 10mm for mounting holes with countersink
 frame_back = 2;     // Slightly thicker for snap catch strength
-mount_hole_dia = 3;
-countersink_dia = 6;  // Diameter of countersink for screw heads
+mount_hole_dia = 4;  // M4 mounting holes (changed from M3 for common screw sizes)
+countersink_dia = 8;  // Diameter of countersink for M4 screw heads
 countersink_depth = 2;  // Depth of countersink
 
 // === DEFAULT GRID (can be overridden in individual files) ===
@@ -125,6 +125,13 @@ audio_jack_ring2 = 6.5;  // Second ring position from front
 label_w = 30;
 label_h = 12;
 label_depth = 0.8;
+
+// Keyhole mounting slot: picture-hanger style for wall/table mounting
+// The keyhole allows a round-headed screw to pass through, then lock in slot
+keyhole_head_dia = 6;   // Diameter for screw head to pass through (5% narrower, fits #6-#8 wood screws)
+keyhole_slot_width = 3.5; // Width of slot for screw shaft
+keyhole_slot_length = 5.3; // Travel distance to lock screw in place
+keyhole_depth = 2.5;      // Depth of keyhole cut (allows screw head to sit below surface)
 
 // AC Power Plug: asymmetric holes for polarity (US 2-prong)
 // Prongs are VERTICAL (tall and thin)
