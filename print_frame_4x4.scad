@@ -1,11 +1,11 @@
 // ============================================
-// PRINT FILE: 2x2 Frame (4 slots)
+// PRINT FILE: 4x4 Frame (16 slots)
 // ============================================
 // Print with back side down (no supports needed)
-// Frame size: ~80.5mm x 48.5mm
+// Frame size: ~145mm x 80.5mm
 // ============================================
 
 include <frame_module.scad>
 
-// Render 2x2 frame (4 slots)
-grid_frame(cols=2, rows=2);
+// Render 4x4 frame (16 slots)
+grid_frame(cols=4, rows=4);

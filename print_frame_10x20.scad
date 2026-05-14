@@ -1,11 +1,12 @@
 // ============================================
-// PRINT FILE: 2x2 Frame (4 slots)
+// PRINT FILE: 10x20 Frame (200 slots) - MAXIMUM SIZE
 // ============================================
 // Print with back side down (no supports needed)
-// Frame size: ~80.5mm x 48.5mm
+// Frame size: ~340.5mm x 336.5mm
+// Fits on 350x350mm bed (maximum size!)
 // ============================================
 
 include <frame_module.scad>
 
-// Render 2x2 frame (4 slots)
-grid_frame(cols=2, rows=2);
+// Render 10x20 frame (200 slots) - Maximum for 350mm bed
+grid_frame(cols=10, rows=20);
