@@ -1,20 +1,19 @@
 // ============================================
-// PRINT FILE: Test Set
+// PRINT FILE: 3x3 Frame (9 slots)
 // ============================================
-// Contains:
-// - 1x 2x2 Frame (4 slots)
-// - 1x USB-C Insert
-// - 1x Micro USB Insert
-// 
-// All pieces arranged for single print
+// Print with back side down (no supports needed)
 // ============================================
 
 include <parameters.scad>
 include <insert_base.scad>
 
-// === 2x2 FRAME MODULE ===
+// Override grid size for 3x3
+grid_cols = 3;
+grid_rows = 3;
+
+// === 3x3 FRAME MODULE ===
 module grid_frame() {
-    // Recalculate frame dimensions for current grid
+    // Recalculate frame dimensions for 3x3 grid
     local_grid_width = (grid_cols * slot_width) + ((grid_cols - 1) * frame_wall);
     local_grid_height = (grid_rows * slot_height) + ((grid_rows - 1) * frame_wall);
     local_frame_width = local_grid_width + (2 * frame_border);
@@ -66,26 +65,5 @@ module mounting_holes(fw, fh) {
     }
 }
 
-// ============================================
-// PRINT LAYOUT
-// ============================================
-// Arrange all pieces on the print bed
-
-// Calculate frame dimensions for layout
-test_frame_width = ((grid_cols * slot_width) + ((grid_cols - 1) * frame_wall)) + (2 * frame_border);
-
-// Frame (centered, print with back side down)
-translate([0, 0, 0])
-    grid_frame();
-
-// USB-C Insert (to the right, print with port side down)
-translate([test_frame_width/2 + 25, 10, 0])
-    rotate([180, 0, 0])
-    translate([0, 0, -insert_total_depth])
-    insert_usbc();
-
-// Micro USB Insert (to the right, below USB-C)
-translate([test_frame_width/2 + 25, -10, 0])
-    rotate([180, 0, 0])
-    translate([0, 0, -insert_total_depth])
-    insert_usb_micro();
+// Render
+grid_frame();

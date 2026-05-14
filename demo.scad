@@ -6,7 +6,7 @@
 // ============================================
 
 // === DEMO OPTIONS ===
-show_cutaway = false;  // Set to true to show cutaway view of insert fitting
+show_cutaway = true;  // Set to true to show cutaway view of insert fitting
 
 include <parameters.scad>
 include <insert_base.scad>
@@ -30,11 +30,17 @@ function get_total_depth(body_depth) = insert_base_depth + body_depth;
 
 // === FRAME MODULE ===
 module grid_frame() {
+    // Recalculate frame dimensions for current grid
+    local_grid_width = (grid_cols * slot_width) + ((grid_cols - 1) * frame_wall);
+    local_grid_height = (grid_rows * slot_height) + ((grid_rows - 1) * frame_wall);
+    local_frame_width = local_grid_width + (2 * frame_border);
+    local_frame_height = local_grid_height + (2 * frame_border);
+    
     difference() {
-        rounded_box_rect(frame_width, frame_height_total, frame_total_depth, 3);
+        rounded_box_rect(local_frame_width, local_frame_height, frame_total_depth, 3);
         translate([0, 0, frame_back]) slot_grid();
         back_cutouts();
-        mounting_holes();
+        mounting_holes(local_frame_width, local_frame_height);
     }
 }
 
@@ -67,9 +73,9 @@ module back_cutouts() {
 }
 
 
-module mounting_holes() {
-    hx = frame_width/2 - frame_border/2-1;
-    hy = frame_height_total/2 - frame_border/2-1;
+module mounting_holes(fw, fh) {
+    hx = fw/2 - frame_border/2 - 1;
+    hy = fh/2 - frame_border/2 - 1;
     for (xm = [-1, 1], ym = [-1, 1]) {
         translate([xm * hx, ym * hy, -0.1]) {
             // Through hole for screw shaft
